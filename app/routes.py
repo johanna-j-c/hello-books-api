@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 class Book:
     def __init__(self, id, title, description):
@@ -16,3 +16,14 @@ books = [
 ]
 
 books_bp = Blueprint("books", __name__, url_prefix="/books")
+
+@books_bp.route("", methods=["GET"])
+def handle_books():
+    book_response = []
+    for book in books:
+        book_response.append({
+            "id": book.id,
+            "title": book.title,
+            "description": book.description
+        })
+    return jsonify(book_response)
