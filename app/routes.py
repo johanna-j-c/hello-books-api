@@ -14,3 +14,5 @@ books = [
     Book(3, "Milk and Honey", "a collection of poetry and prose about survival." 
             "About the experience of violence, abuse, love, loss, and femininity.")
 ]
+
+books_bp = Blueprint("books", __name__, url_prefix="/books")
