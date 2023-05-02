@@ -44,18 +44,28 @@ def handle_books():
         })
 
     return jsonify(book_response)
-    
 
-# @books_bp.route("", methods=["GET"])
-# def handle_books():
-#     book_response = []
-#     for book in books:
-#         book_response.append({
-#             "id": book.id,
-#             "title": book.title,
-#             "description": book.description
-#         })
-#     return jsonify(book_response)
+def validate_book(book_id):
+    try:
+        book_id = int(book_id)
+    except:
+        abort(make_response({"message":f"Book {book.id} is invalid"}, 400))
+    
+    book = Book.query.get(book_id)
+
+    if not book:
+        abort(make_response({"message":f"Book {book.id} not found"}, 404))
+    
+    return book
+
+@books_bp.route("/<book_id>", methods=["GET"])
+def get_one_book(book_id):
+    book = validate_book(book_id)
+
+    return {
+        "title": book.title,
+        "description": book.description
+    }
 
 # def validate_book(book_id):
 #     try:
