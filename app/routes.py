@@ -49,12 +49,12 @@ def validate_book(book_id):
     try:
         book_id = int(book_id)
     except:
-        abort(make_response({"message":f"Book {book.id} is invalid"}, 400))
+        abort(make_response({"message":f"Book {book_id} is invalid"}, 400))
     
     book = Book.query.get(book_id)
 
     if not book:
-        abort(make_response({"message":f"Book {book.id} not found"}, 404))
+        abort(make_response({"message":f"Book {book_id} not found"}, 404))
     
     return book
 
@@ -67,25 +67,15 @@ def get_one_book(book_id):
         "description": book.description
     }
 
-# def validate_book(book_id):
-#     try:
-#         book_id = int(book_id) 
-#     except:
-#         abort(make_response({"message":f"book {book_id} invalid"}, 400))
-    
-#     for book in books:
-#         if book.id == book_id:
-#             return book
-    
-#     abort(make_response({"message":f"book {book_id} not found"}, 404))
+@books_bp.route("/<book_id>", methods=["PUT"])
+def update_book(book_id):
+    book = validate_book(book_id)
 
-# @books_bp.route("/<book_id>", methods=["GET"])
-# def handle_book(book_id):
-    
-#     book = validate_book(book_id)
+    request_body = request.get_json()
 
-#     return {
-#         "id": book.id,
-#         "title": book.title,
-#         "description": book.description
-#     }
+    book.title = request_body["title"]
+    book.description = request_body["description"]
+
+    db.session.commit()
+
+    return make_response({"message":f"Book #{book.id} successfully updated"})
